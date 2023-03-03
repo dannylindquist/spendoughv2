@@ -168,7 +168,6 @@ dist
 .yarn/install-state.gz
 .pnp.\*
 
-# Other
-/app/assets/style.css
+
 # local data
 data.sqlite*

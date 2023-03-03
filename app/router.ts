@@ -10,44 +10,40 @@ export type Context = {
 export type Handler = (
   request: Request,
   context: Context
-) => Response | Promise<Response>;
-
-export type MiddleWareFunction = (
-  request: Request,
-  context: Context
-) => void | undefined | Promise<void> | Promise<Response | undefined>;
+) => Response | Promise<Response | void> | void;
 
 export class Router {
-  middlewares: MiddleWareFunction[] = [];
-  routes: RadixRouter<{ handler: Handler }> = createRadixRouter();
+  middlewares: Handler[] = [];
+  routes: RadixRouter<{ handlers: Handler[] }> = createRadixRouter();
 
-  use(middleware: MiddleWareFunction) {
+  use(middleware: Handler) {
     this.middlewares.push(middleware);
   }
 
-  get(route: string, requestHandler: Handler) {
+  get(route: string, ...requestHandler: Handler[]) {
     this.routes.insert(`GET:${route}`, {
-      handler: requestHandler,
+      handlers: requestHandler,
     });
   }
 
-  post(route: string, requestHandler: Handler) {
+  post(route: string, ...requestHandler: Handler[]) {
     this.routes.insert(`POST:${route}`, {
-      handler: requestHandler,
+      handlers: requestHandler,
     });
   }
 
-  put(route: string, requestHandler: Handler) {
+  put(route: string, ...requestHandler: Handler[]) {
     this.routes.insert(`PUT:${route}`, {
-      handler: requestHandler,
+      handlers: requestHandler,
     });
   }
 
-  del(route: string, requestHandler: Handler) {
+  del(route: string, ...requestHandler: Handler[]) {
     this.routes.insert(`DELETE:${route}`, {
-      handler: requestHandler,
+      handlers: requestHandler,
     });
   }
+
   async handler(request: Request) {
     const url = new URL(request.url);
     const key = `${request.method}:${url.pathname}`;
@@ -66,7 +62,12 @@ export class Router {
     }
     if (routeHandler) {
       context.params = routeHandler.params || {};
-      return routeHandler.handler(request, context);
+      for (const routeFunction of routeHandler.handlers) {
+        const middlewareResult = await routeFunction(request, context);
+        if (middlewareResult instanceof Response) {
+          return middlewareResult;
+        }
+      }
     }
     return new Response("Not found", {
       status: 404,
