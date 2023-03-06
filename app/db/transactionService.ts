@@ -1,4 +1,5 @@
 import { db } from "./db.js";
+import { z } from "zod";
 
 export type DBTransaction = {
   id: number;
@@ -12,6 +13,13 @@ export type DBTransaction = {
   created_at: number;
   updated_at: number;
 };
+
+export const transactionSchema = z.object({
+  amount: z.coerce.number(),
+  description: z.string(),
+  date: z.string(),
+  category: z.coerce.number(),
+});
 
 export function getTransactions(
   userId: number,
@@ -63,6 +71,6 @@ export function createTransaction(transaction: TransactionInsert) {
       $user: transaction.user,
       $is_withdrawal: transaction.is_withdrawal,
       $month_key: transaction.month_key,
-      $date: transaction.month_key,
+      $date: transaction.date,
     });
 }

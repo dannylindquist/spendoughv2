@@ -17,6 +17,7 @@
     "jose": "^4.13.0",
     "preact": "^10.13.0",
     "preact-render-to-string": "^5.2.6",
-    "radix3": "^1.0.0"
+    "radix3": "^1.0.0",
+    "zod": "^3.21.0"
   }
 }
