@@ -4,12 +4,14 @@ import { existsSync } from "fs";
 import { registerHomeRoutes } from "./routes/homeRoutes.jsx";
 import { tokenParseMiddleWare } from "./middleware/tokenParseMiddleware.js";
 import { registerTransactionRoutes } from "./routes/transactionRoutes.jsx";
+import { registerCategoryRoutes } from "./routes/categoryRoutes.jsx";
 
 export const router = new Router();
 
 registerAuthRoutes(router);
 registerHomeRoutes(router);
 registerTransactionRoutes(router);
+registerCategoryRoutes(router);
 
 router.use(tokenParseMiddleWare);
 

@@ -30,7 +30,11 @@ export const registerHomeRoutes = (router: Router) => {
 
     const transactions = getTransactions(user.id, monthKey);
     return renderView(
-      <HomeView monthKey={monthKey} transactions={transactions} />
+      <HomeView
+        monthKey={monthKey}
+        transactions={transactions}
+        currentUser={user}
+      />
     );
   });
 };

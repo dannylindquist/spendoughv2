@@ -9,6 +9,8 @@
     "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "preact",
+    "jsxFragmentFactory": "Fragment",
+    "jsxFactory": "h",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,

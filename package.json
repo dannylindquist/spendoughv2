@@ -5,10 +5,13 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.5.1",
-    "bun-types": "^0.5.0"
+    "bun-types": "^0.5.0",
+    "tailwindcss": "^3.2.7"
   },
   "scripts": {
-    "dev": "bun --hot index.ts"
+    "dev": "bun --hot index.ts",
+    "build:css": "bunx --bun tailwindcss -i tailwind.css -o ./app/assets/style.css -m",
+    "start": "bun index.ts"
   },
   "prettier": {},
   "dependencies": {

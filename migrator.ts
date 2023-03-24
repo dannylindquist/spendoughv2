@@ -37,6 +37,8 @@ for (const migration of migrations) {
     } catch (e) {
       console.error("Failed migration: " + migration);
       console.error(e);
+      // don't continue migrations
+      break;
     }
   }
 }

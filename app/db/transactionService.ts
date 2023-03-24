@@ -14,6 +14,10 @@ export type DBTransaction = {
   updated_at: number;
 };
 
+export type DBTransactionSelect = DBTransaction & {
+  categoryText: string;
+};
+
 export const transactionSchema = z.object({
   amount: z.coerce.number(),
   description: z.string(),
@@ -24,12 +28,23 @@ export const transactionSchema = z.object({
 export function getTransactions(
   userId: number,
   monthKey: number
-): DBTransaction[] {
+): DBTransactionSelect[] {
   return db
-    .prepare<DBTransaction, [number, number]>(
-      "SELECT * from user_transaction where month_key = ? and user = ?"
+    .prepare<DBTransactionSelect, [number, number]>(
+      "SELECT t.*, c.name as categoryText from user_transaction t join user_category c on t.category = c.id where t.month_key = ? and t.user = ? order by t.date desc"
     )
     .all(monthKey, userId);
+}
+
+export function getTransactionById(
+  userId: number,
+  transactionId: number
+): DBTransactionSelect | null {
+  return db
+    .prepare<DBTransactionSelect, [number, number]>(
+      "SELECT t.*, c.name as categoryText from user_transaction t join user_category c on t.category = c.id where t.id = ? and t.user = ?"
+    )
+    .get(transactionId, userId);
 }
 
 export type TransactionInsert = Pick<
@@ -42,6 +57,51 @@ export type TransactionInsert = Pick<
   | "month_key"
   | "date"
 >;
+
+export type TransactionUpdate = TransactionInsert & {
+  id: number;
+};
+
+export function updateTransaction(transaction: TransactionUpdate) {
+  return db
+    .prepare<
+      DBTransaction,
+      {
+        $id: number;
+        $amount: number;
+        $description: string;
+        $category: number;
+        $user: number;
+        $month_key: number;
+        $date: number;
+      }
+    >(
+      `
+        UPDATE 
+          user_transaction set 
+            amount=$amount,
+            description=$description,
+            category=$category,
+            month_key=$month_key,
+            date=$date,
+            updated_at=strftime('%s')
+        where 
+          id=$id 
+            and 
+          user=$user
+        returning *
+      `
+    )
+    .get({
+      $id: transaction.id,
+      $amount: transaction.amount,
+      $description: transaction.description,
+      $category: transaction.category,
+      $user: transaction.user,
+      $month_key: transaction.month_key,
+      $date: transaction.date,
+    });
+}
 
 export function createTransaction(transaction: TransactionInsert) {
   return db
