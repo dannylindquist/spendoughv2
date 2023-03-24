@@ -9,6 +9,8 @@ export const MainLayout = ({ children }: { children: ComponentChildren }) => (
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="stylesheet" href="/assets/style.css" />
     </head>
-    <body>{children}</body>
+    <body>
+      <div class="content-container">{children}</div>
+    </body>
   </html>
 );

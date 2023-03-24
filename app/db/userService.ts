@@ -65,3 +65,19 @@ export const createSession = (user: User): Session | undefined | null => {
   }
   return null;
 };
+
+export const getUserFromSession = (
+  sessionId: number
+): User | undefined | null => {
+  try {
+    const user = db
+      .prepare<DBUser, [number]>(
+        "SELECT id, email FROM user where id = (select user from user_session where id = ?)"
+      )
+      .get(sessionId);
+    return user;
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
+};

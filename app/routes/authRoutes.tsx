@@ -1,4 +1,5 @@
 import { parse } from "cookie";
+import { createDefaultCategories } from "../db/categoryService.js";
 import { createSession, createUser, validateLogin } from "../db/userService.js";
 import { Router } from "../router.js";
 import { redirect } from "../utils/redirect.js";
@@ -90,6 +91,7 @@ export const registerAuthRoutes = (router: Router) => {
     }
     const user = await createUser(email, password);
     if (user != null) {
+      createDefaultCategories(user?.id);
       const session = createSession(user);
       if (session) {
         return new Response("Success", {
