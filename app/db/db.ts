@@ -1,7 +1,9 @@
 import { Database } from "bun:sqlite";
 
+const path = (process.env.mountDir || ".") + "/data.sqlite";
+console.log(path);
 // @ts-expect-error not typing globalThis
-const db: Database = (globalThis["db"] ??= new Database("./data.sqlite"));
+const db: Database = (globalThis["db"] ??= new Database(path));
 
 db.exec("pragma JOURNAL_MODE=wal");
 db.exec("pragma FOREIGN_KEYS=on");
