@@ -36,9 +36,7 @@ for (const migration of migrations) {
       db.prepare(`insert into migrations(filename) values(?)`).run(migration);
     } catch (e) {
       console.error("Failed migration: " + migration);
-      console.error(e);
-      // don't continue migrations
-      break;
+      throw e;
     }
   }
 }
