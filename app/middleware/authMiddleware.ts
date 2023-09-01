@@ -1,7 +1,8 @@
-import { Handler } from "../router.js";
+import { RouteHandler } from "itty-router";
 
-export const authMiddleware: Handler = async (request, context) => {
-  if (!context.props.has("user")) {
+export const authMiddleware: RouteHandler = async (request, context) => {
+  console.log(context);
+  if (!context.user) {
     return new Response("Invalid Session", {
       status: 302,
       headers: {

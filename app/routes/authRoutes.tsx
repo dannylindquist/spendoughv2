@@ -1,14 +1,14 @@
 import { parse } from "cookie";
 import { createDefaultCategories } from "../db/categoryService.js";
 import { createSession, createUser, validateLogin } from "../db/userService.js";
-import { Router } from "../router.js";
+import { RouterType } from "itty-router";
 import { redirect } from "../utils/redirect.js";
 import { renderView } from "../utils/renderView.js";
 import { writeSession } from "../utils/sessionUtils.js";
 import { LoginView } from "../views/Login.jsx";
 import { SignupView } from "../views/Signup.jsx";
 
-export const registerAuthRoutes = (router: Router) => {
+export const registerAuthRoutes = (router: RouterType) => {
   router.post("/logout", () => {
     return new Response(null, {
       status: 302,
@@ -20,7 +20,7 @@ export const registerAuthRoutes = (router: Router) => {
   });
 
   router.get("/login", (request, context) => {
-    if (context.props.has("sessionId")) {
+    if (context.sessionId) {
       return redirect("/");
     }
     const error = parse(request.headers.get("cookie") ?? "")?.error;
@@ -66,7 +66,7 @@ export const registerAuthRoutes = (router: Router) => {
   });
 
   router.get("/signup", (request, context) => {
-    if (context.props.has("sessionId")) {
+    if (context.sessionId) {
       return redirect("/");
     }
     const error = parse(request.headers.get("cookie") ?? "")?.error;

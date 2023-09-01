@@ -15,8 +15,10 @@
   },
   "prettier": {},
   "dependencies": {
+    "alpinejs": "^3.13.0",
     "bcryptjs": "^2.4.3",
     "cookie": "^0.5.0",
+    "itty-router": "^4.0.22",
     "jose": "^4.13.0",
     "preact": "^10.13.0",
     "preact-render-to-string": "^5.2.6",

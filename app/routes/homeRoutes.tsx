@@ -1,12 +1,12 @@
 import { getUserCategories } from "../db/categoryService.js";
 import { getTransactions } from "../db/transactionService.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { Router } from "../router.js";
+import { RouterType } from "itty-router";
 import { redirect } from "../utils/redirect.js";
 import { renderView } from "../utils/renderView.js";
 import { HomeView } from "../views/Home.jsx";
 
-export const registerHomeRoutes = (router: Router) => {
+export const registerHomeRoutes = (router: RouterType) => {
   router.get("/", authMiddleware, function () {
     const date = new Date();
     const monthKey =
@@ -16,8 +16,8 @@ export const registerHomeRoutes = (router: Router) => {
   });
 
   router.get("/:monthKey", authMiddleware, (request, context) => {
-    const monthKey = +context.params.monthKey;
-    const user = context.props.get("user");
+    const monthKey = +request.params.monthKey;
+    const user = context.user;
     if (!user) {
       return new Response("invalid session", {
         status: 302,
