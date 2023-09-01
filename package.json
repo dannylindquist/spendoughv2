@@ -3,6 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@types/alpinejs": "^3.7.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.5.1",
     "bun-types": "^0.5.0",
@@ -10,7 +11,7 @@
   },
   "scripts": {
     "dev": "bun --hot index.ts",
-    "build:css": "bunx --bun tailwindcss -i tailwind.css -o ./app/assets/style.css -m",
+    "build:css": "bunx --bun tailwindcss -i tailwind.css -o ./app/public/style.css -m",
     "start": "bun index.ts"
   },
   "prettier": {},

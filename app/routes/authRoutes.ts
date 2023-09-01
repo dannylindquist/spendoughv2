@@ -1,7 +1,7 @@
 import { parse } from "cookie";
 import { createDefaultCategories } from "../db/categoryService.js";
 import { createSession, createUser, validateLogin } from "../db/userService.js";
-import { RouterType } from "itty-router";
+import { RouterType, html, json } from "itty-router";
 import { redirect } from "../utils/redirect.js";
 import { renderView } from "../utils/renderView.js";
 import { writeSession } from "../utils/sessionUtils.js";
@@ -24,45 +24,69 @@ export const registerAuthRoutes = (router: RouterType) => {
       return redirect("/");
     }
     const error = parse(request.headers.get("cookie") ?? "")?.error;
-    return renderView(<LoginView error={error} />, {
-      "set-cookie": "error=;Max-Age=0;HttpOnly;",
+    return html(LoginView({ error }), {
+      headers: {
+        "set-cookie": "error=;Max-Age=0;HttpOnly;",
+      },
     });
   });
 
-  router.post("/login", async (response) => {
-    const formData = await response.formData();
+  router.post("/login", async (request) => {
+    const useJson = request.headers.get("accept") === "application/json";
+    const formData = await request.formData();
     const email = formData.get("email");
     const password = formData.get("password");
     if (typeof email !== "string" || typeof password !== "string") {
-      return new Response("Bad data", {
-        status: 302,
-        headers: {
-          Location: "/login",
-          "Set-Cookie": "error=Missing required fields;HttpOnly;",
-        },
-      });
+      return useJson
+        ? json(
+            { error: "Missing required fields" },
+            {
+              status: 400,
+            }
+          )
+        : new Response("Bad data", {
+            status: 302,
+            headers: {
+              Location: "/login",
+              "Set-Cookie": "error=Missing required fields;HttpOnly;",
+            },
+          });
     }
     const user = await validateLogin(email, password);
     console.log(user);
     if (user) {
       const session = createSession(user);
       if (session) {
-        return new Response("Success", {
-          status: 302,
-          headers: {
-            Location: "/",
-            "Set-Cookie": await writeSession(session),
-          },
-        });
+        return useJson
+          ? json(
+              {
+                message: "success",
+              },
+              { headers: { "set-cookie": await writeSession(session) } }
+            )
+          : new Response("Success", {
+              status: 302,
+              headers: {
+                Location: "/",
+                "Set-Cookie": await writeSession(session),
+              },
+            });
       }
     }
-    return new Response("Failure", {
-      status: 302,
-      headers: {
-        Location: "/login",
-        "Set-Cookie": "error=Failed to log in;HttpOnly;",
-      },
-    });
+    return useJson
+      ? json(
+          {
+            error: "Failed to log in",
+          },
+          { status: 400 }
+        )
+      : new Response("Failure", {
+          status: 302,
+          headers: {
+            Location: "/login",
+            "Set-Cookie": "error=Failed to log in;HttpOnly;",
+          },
+        });
   });
 
   router.get("/signup", (request, context) => {
@@ -70,8 +94,10 @@ export const registerAuthRoutes = (router: RouterType) => {
       return redirect("/");
     }
     const error = parse(request.headers.get("cookie") ?? "")?.error;
-    return renderView(<SignupView error={error} />, {
-      "set-cookie": "error=;Max-Age=0;HttpOnly;",
+    return html(SignupView({ error }), {
+      headers: {
+        "set-cookie": "error=;Max-Age=0;HttpOnly;",
+      },
     });
   });
 

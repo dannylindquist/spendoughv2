@@ -1,7 +1,7 @@
 import { getUserCategories } from "../db/categoryService.js";
 import { getTransactions } from "../db/transactionService.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { RouterType } from "itty-router";
+import { RouterType, html } from "itty-router";
 import { redirect } from "../utils/redirect.js";
 import { renderView } from "../utils/renderView.js";
 import { HomeView } from "../views/Home.jsx";
@@ -29,12 +29,12 @@ export const registerHomeRoutes = (router: RouterType) => {
     }
 
     const transactions = getTransactions(user.id, monthKey);
-    return renderView(
-      <HomeView
-        monthKey={monthKey}
-        transactions={transactions}
-        currentUser={user}
-      />
+    return html(
+      HomeView({
+        monthKey,
+        transactions,
+        currentUser: user,
+      })
     );
   });
 };

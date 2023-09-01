@@ -1,4 +1,4 @@
-import { RouterType } from "itty-router";
+import { html, RouterType } from "itty-router";
 import { getUserCategories } from "../db/categoryService.js";
 import {
   createTransaction,
@@ -9,16 +9,18 @@ import {
   updateTransaction,
 } from "../db/transactionService.js";
 import { redirect } from "../utils/redirect.js";
-import { renderView } from "../utils/renderView.js";
-import { TransactionEditPage } from "../views/TransactionEditPage.jsx";
+import { TransactionEditPage } from "../views/TransactionEditPage.js";
 
 export function registerTransactionRoutes(router: RouterType) {
   router.get("/transactions/new", (request, context) => {
     const user = context.user;
     const monthKey = +request.params.monthKey;
     const categories = getUserCategories(user.id);
-    return renderView(
-      <TransactionEditPage categories={categories} currentUser={user} />
+    return html(
+      TransactionEditPage({
+        categories,
+        currentUser: user,
+      })
     );
   });
 
@@ -28,12 +30,12 @@ export function registerTransactionRoutes(router: RouterType) {
     const transaction = getTransactionById(user.id, transactionId);
     if (transaction) {
       const categories = getUserCategories(user.id);
-      return renderView(
-        <TransactionEditPage
-          transaction={transaction}
-          categories={categories}
-          currentUser={user}
-        />
+      return html(
+        TransactionEditPage({
+          transaction,
+          categories,
+          currentUser: user,
+        })
       );
     }
   });

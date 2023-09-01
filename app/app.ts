@@ -16,7 +16,8 @@ registerTransactionRoutes(router);
 registerCategoryRoutes(router);
 
 router.get("/assets/*", async (_, context) => {
-  const asset: string = `./app${context.url.pathname}`;
+  const publicFile = context.url.pathname.replace(/^\/assets/, "/public/");
+  const asset: string = `./app${publicFile}`;
   if (existsSync(asset)) {
     return new Response(Bun.file(asset));
   }
