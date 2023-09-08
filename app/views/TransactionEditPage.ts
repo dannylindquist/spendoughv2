@@ -28,59 +28,67 @@ export function TransactionEditPage({
         <h2 class="text-4xl font-black py-4 text-center">
           ${isEditing ? "Edit Transaction" : "Create Transaction"}
         </h2>
-        <form
-          method="post"
-          class="flex flex-col gap-4 bg-gray-50 px-4 py-6 rounded-xl border border-gray-300"
-        >
+        <form method="post" class="flex flex-col gap-4 px-4 py-6 rounded-xl">
           <div class="space-y-1">
-            <label class="block" htmlFor="description"> Description: </label>
+            <label class="block" for="description">Description:</label>
             <input
-              class="px-2 py-2 border block w-full rounded"
+              class="px-2 py-2 border block w-full rounded bg-gray-50 ring-2 ring-gray-950/5 appearance-none focus:ring-yellow-500 focus:outline-none"
               required
-              value="{isEditing"
-              ?
-              transaction.description
-              :
-              undefined}
+              ${transaction?.description
+                ? `value="${transaction.description}"`
+                : ""}
               type="text"
               name="description"
               id="description"
             />
           </div>
           <div class="space-y-1">
-            <label class="block" htmlFor="amount"> Amount: </label>
-            <input class="px-2 py-2 border block w-full rounded"
-            inputMode="decimal" required value={isEditing ? transaction.amount /
-            100 : undefined} type="number" name="amount" id="amount" step="0.01"
+            <label class="block" for="amount"> Amount: </label>
+            <input
+              class="px-2 py-2 border block w-full rounded bg-gray-50 ring-2 ring-gray-950/5 appearance-none focus:ring-yellow-500 focus:outline-none"
+              inputmode="decimal"
+              required
+              value=${isEditing ? transaction.amount / 100 : undefined}
+              type="number"
+              name="amount"
+              id="amount"
+              step="0.01"
             />
           </div>
           <div class="space-y-1">
-            <label class="block" htmlFor="date"> Date: </label>
+            <label class="block" for="date"> Date: </label>
             <input
-              class="px-2 py-2 border block w-full appearance-none rounded bg-white"
+              class="px-2 py-2 border block w-full appearance-none rounded bg-gray-50 ring-2 ring-gray-950/5 focus:ring-yellow-500 focus:outline-none"
               required
               type="date"
               name="date"
               id="date"
-              value="{todayStr}"
+              value="${todayStr}"
             />
           </div>
           <div class="space-y-1">
-            <label class="block" htmlFor="date"> Category: </label>
-            <div class="flex gap-1 flex-wrap">
+            <label class="block" for="date">Category: </label>
+            <div class="flex gap-2 flex-wrap">
               ${categories
                 .map(
                   (category) => html`
                     <div>
-                      <input checked={category.id === transaction?.category}
-                      class="sr-only peer" required type="radio"
-                      value={category.id} name="category"
-                      id=${`category-${category.id}`} />
+                      <input
+                        ${category.id === transaction?.category
+                          ? "checked"
+                          : ""}
+                        class="sr-only peer"
+                        required
+                        type="radio"
+                        value=${category.id}
+                        name="category"
+                        id=${`category-${category.id}`}
+                      />
                       <label
-                        class="block px-4 py-2 border bg-white peer-checked:border-green-500 rounded whitespace-nowrap min-w-[5rem] text-center"
-                        htmlFor=${`category-${category.id}`}
+                        class="block px-4 py-2 bg-white peer-checked:ring-2 peer-checked:ring-yellow-500 rounded whitespace-nowrap min-w-[5rem] text-center ring-2 ring-gray-950/5"
+                        for=${`category-${category.id}`}
                       >
-                        {category.name}
+                        ${category.name}
                       </label>
                     </div>
                   `
@@ -89,7 +97,7 @@ export function TransactionEditPage({
             </div>
           </div>
           <button
-            class="block border p-2 rounded bg-gray-800 text-gray-50"
+            class="block p-2 font-medium rounded bg-gray-50 ring-2 ring-gray-950/5 focus:outline-none appearance-none"
             type="submit"
           >
             ${isEditing ? "Update" : "Create"}

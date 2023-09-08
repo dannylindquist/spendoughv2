@@ -4,9 +4,11 @@ import { html } from "../utils/html.js";
 export const MainLayout = ({
   currentUser,
   children,
+  scripts = [],
 }: {
   currentUser?: User;
   children: string;
+  scripts?: string[];
 }) => html`
   <html>
     <head>
@@ -15,18 +17,25 @@ export const MainLayout = ({
       <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="stylesheet" href="/assets/style.css" />
+      ${scripts.map((script) => script).join("")}
       <script src="/assets/app.js" type="module"></script>
       <link
         rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📒</text></svg>"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>${"📒"}</text></svg>"
       />
     </head>
     <body class="text-gray-700 bg-gray-200 flex font-sans">
       ${currentUser
         ? html`
             <div
+              x-data="{ navOpen: false }"
+              x-show="navOpen"
+              style="display:none"
+              x-transition.origin.left
+              @open-nav.window="navOpen = true"
+              @click.outside="navOpen = false"
               id="sidebar-nav"
-              class="border-r border-r-gray-300 flex-col md:flex bg-gray-100 target:fixed target:left-0 target:top-0 target:bottom-0 target:flex relative z-10 hidden"
+              class="border-r border-r-gray-300 flex-col md:flex bg-gray-100 fixed left-0 top-0 bottom-0 flex z-10"
             >
               <div
                 class="flex items-center gap-1 text-xl font-semibold py-6 px-4"
@@ -36,13 +45,18 @@ export const MainLayout = ({
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 100 100"
                 >
-                  <text y="0.9em" font-size="90">📒</text></svg
-                >{" "} Spendough
+                  <text y="0.9em" font-size="90">${"📒"}</text>
+                </svg>
+                Spendough
               </div>
               <nav class="flex-1 pl-4">
                 <ul class="space-y-2">
                   <li>
-                    <a href="/" class="inline-flex gap-1">
+                    <a
+                      x-data
+                      :href="'/'+$monthKey(new Date)"
+                      class="inline-flex gap-1"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -88,7 +102,13 @@ export const MainLayout = ({
           `
         : ""}
       <div class="flex-1 justify-center overflow-auto relative pb-16">
-        <a href="#sidebar-nav" class="absolute ml-2 mt-2 px-2 py-2">
+        <button
+          type="button"
+          aria-label="Toggle nav"
+          x-data
+          @click="$dispatch('open-nav')"
+          class="absolute ml-2 mt-2 px-2 py-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -103,8 +123,8 @@ export const MainLayout = ({
               d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
             />
           </svg>
-        </a>
-        ${children}
+        </button>
+        <main class="pt-8">${children}</main>
       </div>
     </body>
   </html>

@@ -5,6 +5,7 @@
     "target": "esnext",
     "moduleResolution": "nodenext",
     "strict": true,
+    "noEmit": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
     "jsx": "preserve",
@@ -17,5 +18,6 @@
     "types": [
       "bun-types" // add Bun global
     ]
-  }
+  },
+  "exclude": ["./app/assets"]
 }

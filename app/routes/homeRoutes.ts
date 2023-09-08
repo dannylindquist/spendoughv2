@@ -3,7 +3,6 @@ import { getTransactions } from "../db/transactionService.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { RouterType, html } from "itty-router";
 import { redirect } from "../utils/redirect.js";
-import { renderView } from "../utils/renderView.js";
 import { HomeView } from "../views/Home.jsx";
 
 export const registerHomeRoutes = (router: RouterType) => {

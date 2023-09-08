@@ -3,7 +3,6 @@ import { createDefaultCategories } from "../db/categoryService.js";
 import { createSession, createUser, validateLogin } from "../db/userService.js";
 import { RouterType, html, json } from "itty-router";
 import { redirect } from "../utils/redirect.js";
-import { renderView } from "../utils/renderView.js";
 import { writeSession } from "../utils/sessionUtils.js";
 import { LoginView } from "../views/Login.jsx";
 import { SignupView } from "../views/Signup.jsx";
@@ -39,7 +38,7 @@ export const registerAuthRoutes = (router: RouterType) => {
     if (typeof email !== "string" || typeof password !== "string") {
       return useJson
         ? json(
-            { error: "Missing required fields" },
+            { message: "Missing required fields" },
             {
               status: 400,
             }
@@ -53,7 +52,6 @@ export const registerAuthRoutes = (router: RouterType) => {
           });
     }
     const user = await validateLogin(email, password);
-    console.log(user);
     if (user) {
       const session = createSession(user);
       if (session) {
@@ -76,7 +74,7 @@ export const registerAuthRoutes = (router: RouterType) => {
     return useJson
       ? json(
           {
-            error: "Failed to log in",
+            message: "Failed to log in",
           },
           { status: 400 }
         )
@@ -102,48 +100,81 @@ export const registerAuthRoutes = (router: RouterType) => {
   });
 
   router.post("/signup", async (request, context) => {
+    const useJson = request.headers.get("accept") === "application/json";
     const formData = await request.formData();
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const passwordConfirm = formData.get("password-confirm");
     if (password && passwordConfirm && password !== passwordConfirm) {
-      return new Response("Passwords do not match", {
-        status: 302,
-        headers: {
-          Location: "/signup",
-          "set-cookie": `error=Passwords don't match;HttpOnly;`,
-        },
-      });
+      return useJson
+        ? json(
+            {
+              message: "Passwords do not match",
+            },
+            { status: 400 }
+          )
+        : new Response("Passwords do not match", {
+            status: 302,
+            headers: {
+              Location: "/signup",
+              "set-cookie": `error=Passwords don't match;HttpOnly;`,
+            },
+          });
     }
     const user = await createUser(email, password);
     if (user != null) {
       createDefaultCategories(user?.id);
       const session = createSession(user);
       if (session) {
-        return new Response("Success", {
-          status: 302,
-          headers: {
-            Location: "/",
-            "Set-Cookie": await writeSession(session),
-          },
-        });
+        return useJson
+          ? json(
+              {
+                message: "success",
+              },
+              {
+                headers: {
+                  "set-cookie": await writeSession(session),
+                },
+              }
+            )
+          : new Response("Success", {
+              status: 302,
+              headers: {
+                Location: "/",
+                "Set-Cookie": await writeSession(session),
+              },
+            });
       } else {
-        return new Response("Success", {
-          status: 302,
-          headers: {
-            Location: "/signup",
-            "Set-Cookie": "error=Something went wrong.;HttpOnly;",
-          },
-        });
+        return useJson
+          ? json(
+              {
+                message: "Something went wrong.",
+              },
+              { status: 500 }
+            )
+          : new Response("Success", {
+              status: 302,
+              headers: {
+                Location: "/signup",
+                "Set-Cookie": "error=Something went wrong.;HttpOnly;",
+              },
+            });
       }
     } else {
-      return new Response("Email in use", {
-        status: 302,
-        headers: {
-          Location: "/signup",
-          "set-cookie": `error=Email is already in use.;HttpOnly;`,
-        },
-      });
+      return useJson
+        ? json(
+            { message: "Email is already in use." },
+            {
+              status: 400,
+            }
+          )
+        : new Response("Email in use", {
+            status: 302,
+            headers: {
+              Location: "/signup",
+              "set-cookie": `error=Email is already in use.;HttpOnly;`,
+            },
+          });
     }
   });
 };

@@ -3,24 +3,12 @@ import { MainLayout } from "./layout.js";
 
 export const LoginView = ({ error }: { error?: string }) =>
   MainLayout({
+    scripts: ['<script src="/assets/login.js" type="module"></script>'],
     children: html`
       <div class="max-w-lg mx-auto px-2">
         <h2 class="text-4xl font-black py-4 text-center">Login</h2>
         <form
-          x-data="{
-            error: '', 
-            async login() {
-              const formData = new FormData(this.$el);
-              const res = await fetch('/login', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                  'accept': 'application/json'
-                }
-              });
-              console.log(res)
-            }
-          }"
+          x-data="loginForm"
           @submit.prevent="login"
           action="/login"
           method="post"

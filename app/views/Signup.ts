@@ -6,8 +6,37 @@ export const SignupView = ({ error }: { error?: string }) =>
     children: html`
       <div class="max-w-lg mx-auto px-2">
         <h2 class="text-4xl font-black py-4 text-center">Sign Up</h2>
-        <form action="/signup" method="post" class="flex flex-col gap-2">
-          ${error ? html`<p class="bg-red-100 p-2">${error}</p>` : ""}
+        <form
+          x-data="{
+            error: '', 
+            async signup() {
+              const formData = new FormData(this.$el);
+              const res = await fetch('/signup', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                  'accept': 'application/json'
+                }
+              });
+              if(!res.ok) {
+                const json = await res.json();
+                this.error = json.message;
+              } else {
+                window.location = '/'
+              }
+            }
+          }"
+          @submit.prevent="signup"
+          action="/signup"
+          method="post"
+          class="flex flex-col gap-2"
+        >
+          <p
+            class="bg-red-100 p-2"
+            x-show="error"
+            x-text="error"
+            x-transition
+          ></p>
           <div>
             <label for="email">Email:</label>
             <input

@@ -41,7 +41,7 @@ export function registerTransactionRoutes(router: RouterType) {
   });
 
   router.post("/transactions/:transactionId/edit", async (request, context) => {
-    const transactionId = +context.params.transactionId;
+    const transactionId = +request.params.transactionId;
     const user = context.user;
     const formData = await request.formData();
     const formObject = Object.fromEntries(formData.entries());

@@ -6,24 +6,30 @@
     "@types/alpinejs": "^3.7.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.5.1",
-    "bun-types": "^0.5.0",
+    "@types/sanitize-html": "^2.9.0",
+    "bun-types": "^0.8.1",
     "tailwindcss": "^3.2.7"
   },
   "scripts": {
     "dev": "bun --hot index.ts",
+    "build": "bun build.ts && bun run build:css",
     "build:css": "bunx --bun tailwindcss -i tailwind.css -o ./app/public/style.css -m",
     "start": "bun index.ts"
   },
   "prettier": {},
   "dependencies": {
     "alpinejs": "^3.13.0",
+    "autoprefixer": "^10.4.15",
     "bcryptjs": "^2.4.3",
     "cookie": "^0.5.0",
     "itty-router": "^4.0.22",
     "jose": "^4.13.0",
+    "micromorph": "^0.4.5",
+    "postcss": "^8.4.29",
     "preact": "^10.13.0",
     "preact-render-to-string": "^5.2.6",
     "radix3": "^1.0.0",
+    "sanitize-html": "^2.11.0",
     "zod": "^3.21.0"
   }
 }

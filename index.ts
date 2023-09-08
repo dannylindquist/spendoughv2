@@ -1,5 +1,10 @@
 import { ServeOptions } from "bun";
 import { router } from "./app/app.jsx";
+import { runWatcher } from "./app/utils/buildAssets.js";
+
+runWatcher();
+
+console.log("reloading", new Date());
 
 export default {
   fetch(request) {

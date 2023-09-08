@@ -11,9 +11,9 @@ export const router = Router();
 router.all("*", tokenParseMiddleWare);
 
 registerAuthRoutes(router);
-registerHomeRoutes(router);
 registerTransactionRoutes(router);
 registerCategoryRoutes(router);
+registerHomeRoutes(router);
 
 router.get("/assets/*", async (_, context) => {
   const publicFile = context.url.pathname.replace(/^\/assets/, "/public/");

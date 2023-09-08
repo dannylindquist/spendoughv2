@@ -18,6 +18,6 @@ WORKDIR /app
 COPY ./ /app
 
 RUN bun install
-RUN bun run build:css
+RUN bun run build
 
 CMD ["bun", "run", "/app/start.ts"]
