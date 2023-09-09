@@ -3,7 +3,7 @@ import Alpine from "alpinejs";
 window.Alpine = Alpine;
 
 Alpine.magic("router", () => ({
-  goto(path: string) {
+  go(path: string) {
     window.location.assign(path);
   },
 }));

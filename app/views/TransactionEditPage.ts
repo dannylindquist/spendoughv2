@@ -28,7 +28,19 @@ export function TransactionEditPage({
         <h2 class="text-4xl font-black py-4 text-center">
           ${isEditing ? "Edit Transaction" : "Create Transaction"}
         </h2>
-        <form method="post" class="flex flex-col gap-4 px-4 py-6 rounded-xl">
+        <form
+          x-data="{ 
+            isEditing: ${isEditing}, 
+            toDateString() {
+              const date = new Date();
+              return date.getFullYear()+'-'+(date.getMonth() + 1).toString()
+    .padStart(2, '0')+'-'+date.getDate().toString().padStart(2, '0');
+            }
+          }"
+          x-init="if(!isEditing) $refs.date.value = toDateString()"
+          method="post"
+          class="flex flex-col gap-4 px-4 py-6 rounded-xl"
+        >
           <div class="space-y-1">
             <label class="block" for="description">Description:</label>
             <input
@@ -58,12 +70,13 @@ export function TransactionEditPage({
           <div class="space-y-1">
             <label class="block" for="date"> Date: </label>
             <input
+              x-ref="date"
               class="px-2 py-2 border block w-full appearance-none rounded bg-gray-50 ring-2 ring-gray-950/5 focus:ring-yellow-500 focus:outline-none"
               required
               type="date"
               name="date"
               id="date"
-              value="${todayStr}"
+              value=${isEditing ? todayStr : undefined}
             />
           </div>
           <div class="space-y-1">
