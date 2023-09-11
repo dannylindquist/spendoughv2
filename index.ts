@@ -2,9 +2,12 @@ import { ServeOptions } from "bun";
 import { router } from "./app/app.jsx";
 import { runWatcher } from "./app/utils/buildAssets.js";
 
-runWatcher();
-
-console.log("reloading", new Date());
+if (process.env.NODE_ENV !== "production") {
+  runWatcher();
+  Bun.spawn(["bun", "build:css"], {
+    stdout: "inherit",
+  });
+}
 
 export default {
   fetch(request) {

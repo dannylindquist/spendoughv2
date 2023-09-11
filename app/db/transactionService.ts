@@ -5,6 +5,7 @@ export type DBTransaction = {
   id: number;
   amount: number;
   description: string;
+  notes?: string;
   category: number;
   user: number;
   is_withdrawal: number;
@@ -21,6 +22,7 @@ export type DBTransactionSelect = DBTransaction & {
 export const transactionSchema = z.object({
   amount: z.coerce.number(),
   description: z.string(),
+  notes: z.string().optional(),
   date: z.string(),
   category: z.coerce.number(),
 });
@@ -51,6 +53,7 @@ export type TransactionInsert = Pick<
   DBTransaction,
   | "amount"
   | "description"
+  | "notes"
   | "category"
   | "user"
   | "is_withdrawal"
@@ -70,6 +73,7 @@ export function updateTransaction(transaction: TransactionUpdate) {
         $id: number;
         $amount: number;
         $description: string;
+        $notes?: string;
         $category: number;
         $user: number;
         $month_key: number;
@@ -81,6 +85,7 @@ export function updateTransaction(transaction: TransactionUpdate) {
           user_transaction set 
             amount=$amount,
             description=$description,
+            notes=$notes,
             category=$category,
             month_key=$month_key,
             date=$date,
@@ -96,6 +101,7 @@ export function updateTransaction(transaction: TransactionUpdate) {
       $id: transaction.id,
       $amount: transaction.amount,
       $description: transaction.description,
+      $notes: transaction.notes,
       $category: transaction.category,
       $user: transaction.user,
       $month_key: transaction.month_key,
@@ -110,6 +116,7 @@ export function createTransaction(transaction: TransactionInsert) {
       {
         $amount: number;
         $description: string;
+        $notes?: string;
         $category: number;
         $user: number;
         $is_withdrawal: number;
@@ -119,14 +126,15 @@ export function createTransaction(transaction: TransactionInsert) {
     >(
       `
         INSERT INTO 
-        user_transaction(amount,description,category,user,is_withdrawal,month_key,date) 
-        values($amount,$description,$category,$user,$is_withdrawal,$month_key,$date)
+        user_transaction(amount,description,notes,category,user,is_withdrawal,month_key,date) 
+        values($amount,$description,$notes,$category,$user,$is_withdrawal,$month_key,$date)
         returning *
       `
     )
     .get({
       $amount: transaction.amount,
       $description: transaction.description,
+      $notes: transaction.notes,
       $category: transaction.category,
       $user: transaction.user,
       $is_withdrawal: transaction.is_withdrawal,

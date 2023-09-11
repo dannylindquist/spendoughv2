@@ -20,4 +20,6 @@ COPY ./ /app
 RUN bun install
 RUN bun run build
 
+ENV NODE_ENV production
+
 CMD ["bun", "run", "/app/start.ts"]

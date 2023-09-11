@@ -14,7 +14,7 @@
     "dev": "bun --hot index.ts",
     "build": "bun build.ts && bun run build:css",
     "build:css": "bunx --bun tailwindcss -i tailwind.css -o ./app/public/style.css -m",
-    "start": "bun index.ts"
+    "start": "NODE_ENV=production bun index.ts"
   },
   "prettier": {},
   "dependencies": {

@@ -52,15 +52,13 @@ export function TransactionList({
               <div class="text-gray-700 text-sm font-semibold py-3 pb-2">
                 ${secondsToPrettyString(+date)}
               </div>
-              <div
-                class="rounded-xl bg-gray-50 px-4 py-2 ring-2 ring-gray-950/5"
-              >
+              <div class="rounded-xl bg-gray-50 py-2 ring-2 ring-gray-950/5">
                 ${groups[date]
                   .map(
                     (transaction, index) => html`
                       <a
                         href=${`"/transactions/${transaction.id}/edit?month_key=${transaction.month_key}"`}
-                        class="flex items-center py-2"
+                        class="flex items-center py-2 pl-4 pr-2"
                       >
                         <div>
                           ${sanitize(transaction.description)}
@@ -86,7 +84,11 @@ export function TransactionList({
                           ${moneyFormatter.format(transaction.amount / 100)}
                         </div>
                         <div>
-                          <button type="button" aria-label="actions">
+                          <button
+                            type="button"
+                            aria-label="actions"
+                            class="p-2"
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"

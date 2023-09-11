@@ -55,6 +55,7 @@ export function registerTransactionRoutes(router: RouterType) {
         category: transaction.data.category,
         date: Math.floor(date.getTime() / 1000),
         description: transaction.data.description,
+        notes: transaction.data.notes,
         is_withdrawal: 1,
         month_key: +`${date.getUTCFullYear()}${(date.getUTCMonth() + 1)
           .toString()
@@ -89,6 +90,7 @@ export function registerTransactionRoutes(router: RouterType) {
         category: transaction.data.category,
         date: Math.floor(date.getTime() / 1000),
         description: transaction.data.description,
+        notes: transaction.data.notes,
         is_withdrawal: 1,
         month_key: +`${date.getUTCFullYear()}${(date.getUTCMonth() + 1)
           .toString()
