@@ -1,0 +1,16 @@
+{
+  "name": "Spendough",
+  "short_name": "Spendough",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff",
+  "theme_color": "#e7e5e4",
+  "icons": [
+    {
+      "src": "/assets/icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ]
+}

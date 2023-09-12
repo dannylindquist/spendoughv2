@@ -61,10 +61,7 @@ export function TransactionEditPage({
               class="px-2 py-2 border block w-full rounded bg-gray-50 ring-2 ring-gray-950/5 appearance-none focus:ring-yellow-500 focus:outline-none"
               name="notes"
               id="notes"
-            >
-${transaction?.notes ? sanitize(transaction.notes) : ""}
-</textarea
-            >
+            >${sanitize(transaction?.notes ?? "")}</textarea>
           </div>
           <div class="space-y-1">
             <label class="block" for="amount"> Amount: </label>
