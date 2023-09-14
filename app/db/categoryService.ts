@@ -34,3 +34,11 @@ export function getUserCategories(userId: number) {
     .prepare<DBCategory, number>("SELECT * from user_category where user = ?")
     .all(userId);
 }
+
+export function getUserCategoryById(userId: number, categoryId: number) {
+  return db
+    .prepare<DBCategory, [number, number]>(
+      "SELECT * from user_category where user = ? and id = ?"
+    )
+    .get(userId, categoryId);
+}

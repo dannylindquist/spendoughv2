@@ -19,21 +19,47 @@ export function CategoryEditPage({
   return MainLayout({
     currentUser,
     children: html`
-      <div class="max-w-sm mx-auto px-2">
+      <div class="max-w-sm mx-auto px-2 pt-12">
         <h2 class="text-4xl font-black py-4 text-center">
           ${isEditing ? "Edit Category" : "Create Category"}
         </h2>
         <form
+          x-data="{ error: '', submitting: false }"
+          @submit.prevent="
+            submitting = true;
+            const formData = new FormData($el);
+            const res = await fetch('/categories/new', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                accept: 'application/json',
+              },
+            });
+            if (!res.ok) {
+              const json = await res.json();
+              error = json.message;
+              submitting = false;
+            } else {
+              $router.go('/categories');
+            }
+          "
           action="/categories/new"
           method="post"
           class="flex flex-col gap-4 bg-gray-50 px-4 py-6 rounded-xl border border-gray-300"
         >
+          <p
+            x-show="error"
+            x-transition
+            x-text="error"
+            class="bg-red-100 p-2"
+            style="display:none;"
+          ></p>
           <div class="space-y-1">
             <label class="block" htmlFor="name"> Name: </label>
             <input
               class="px-2 py-2 border block w-full rounded"
               required
-              value=${isEditing ? category.name : undefined}
+              ${isEditing ? `value=${category.name}` : undefined}
               type="text"
               name="name"
               id="name"
