@@ -21,12 +21,48 @@ export function createDefaultCategories(userId: number) {
   db.prepare("SELECT * FROM user_category WHERE user = ?").all(userId);
 }
 
+export function isCategoryNameUnique(
+  userId: number,
+  categoryName: string,
+  existingId?: number
+) {
+  if (existingId) {
+    return (
+      db
+        .prepare(
+          "select * from user_category where user = ? and name = ? and id != ? limit 1"
+        )
+        .get(userId, categoryName, existingId) === null
+    );
+  } else {
+    return (
+      db
+        .prepare(
+          "select * from user_category where user = ? and name = ? limit 1"
+        )
+        .get(userId, categoryName) === null
+    );
+  }
+}
+
 export function createCategory(userId: number, name: string) {
   return db
     .prepare<DBCategory, [number, string]>(
       "INSERT INTO user_category(user, name) values(?,?) returning *"
     )
     .get(userId, name);
+}
+
+export function updateCategory(
+  userId: number,
+  categoryId: number,
+  name: string
+) {
+  return db
+    .prepare<DBCategory, [string, number, number]>(
+      "update user_category set name = ? where user = ? and id = ? returning *"
+    )
+    .get(name, userId, categoryId);
 }
 
 export function getUserCategories(userId: number) {

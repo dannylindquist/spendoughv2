@@ -28,7 +28,7 @@ export function CategoryEditPage({
           @submit.prevent="
             submitting = true;
             const formData = new FormData($el);
-            const res = await fetch('/categories/new', {
+            const res = await fetch($el.action, {
               method: 'POST',
               body: formData,
               headers: {
@@ -43,7 +43,6 @@ export function CategoryEditPage({
               $router.go('/categories');
             }
           "
-          action="/categories/new"
           method="post"
           class="flex flex-col gap-4 bg-gray-50 px-4 py-6 rounded-xl border border-gray-300"
         >
