@@ -1,3 +1,4 @@
+import { sql } from "../utils/sql.js";
 import { db } from "./db.js";
 import { z } from "zod";
 
@@ -47,6 +48,17 @@ export function getTransactionById(
       "SELECT t.*, c.name as categoryText from user_transaction t join user_category c on t.category = c.id where t.id = ? and t.user = ?"
     )
     .get(transactionId, userId);
+}
+
+export function deleteTransactionById(userId: number, transactionId: number) {
+  try {
+    db.prepare<DBTransactionSelect, [number, number]>(
+      sql`DELETE FROM user_transaction WHERE id = ? AND user = ?`
+    ).run(transactionId, userId);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export type TransactionInsert = Pick<

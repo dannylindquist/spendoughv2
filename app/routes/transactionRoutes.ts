@@ -1,7 +1,8 @@
-import { html, RouterType } from "itty-router";
+import { html, json, RouterType } from "itty-router";
 import { getUserCategories } from "../db/categoryService.js";
 import {
   createTransaction,
+  deleteTransactionById,
   getTransactionById,
   TransactionInsert,
   transactionSchema,
@@ -38,6 +39,26 @@ export function registerTransactionRoutes(router: RouterType) {
         })
       );
     }
+  });
+
+  router.delete("/transactions/:transactionId", (request, context) => {
+    const useJson = request.headers.get("accept") === "application/json";
+    const searchParams = context.url.searchParams as URLSearchParams;
+    console.log(searchParams, searchParams.get("month_key"));
+    const transactionId = +request.params.transactionId;
+    const user = context.user;
+    const transaction = deleteTransactionById(user.id, transactionId);
+    if (transaction) {
+      return useJson
+        ? json({ message: "success" })
+        : redirect(`/${searchParams.get("month_key") ?? ""}`);
+    }
+    return json(
+      { message: "failure" },
+      {
+        status: 404,
+      }
+    );
   });
 
   router.post("/transactions/:transactionId/edit", async (request, context) => {

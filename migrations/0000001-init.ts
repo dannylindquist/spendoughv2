@@ -1,8 +1,9 @@
 import Database from "bun:sqlite";
+const sql = String.raw;
 
 export function up(db: Database) {
   db.run(
-    `CREATE TABLE user(
+    sql`CREATE TABLE user(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL,
@@ -14,7 +15,7 @@ export function up(db: Database) {
   );
 
   db.run(
-    `CREATE TABLE user_session(
+    sql`CREATE TABLE user_session(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user INTEGER NOT NULL,
         expires_at INTEGER NOT NULL,
@@ -26,10 +27,12 @@ export function up(db: Database) {
       )`
   );
 
-  db.run("CREATE INDEX IF NOT EXISTS fk_session_user on user_session(user);");
+  db.run(
+    sql`CREATE INDEX IF NOT EXISTS fk_session_user on user_session(user);`
+  );
 
   db.run(
-    `CREATE TABLE user_transaction(
+    sql`CREATE TABLE user_transaction(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         amount INTEGER NOT NULL,
         description TEXT NOT NULL,
@@ -48,17 +51,17 @@ export function up(db: Database) {
   );
 
   db.run(
-    "CREATE INDEX IF NOT EXISTS fk_transaction_user on user_transaction(user);"
+    sql`CREATE INDEX IF NOT EXISTS fk_transaction_user on user_transaction(user);`
   );
   db.run(
-    "CREATE INDEX IF NOT EXISTS fk_transaction_category on user_transaction(category);"
+    sql`CREATE INDEX IF NOT EXISTS fk_transaction_category on user_transaction(category);`
   );
   db.run(
-    "CREATE INDEX IF NOT EXISTS idx_transaction_monthKey on user_transaction(month_key);"
+    sql`CREATE INDEX IF NOT EXISTS idx_transaction_monthKey on user_transaction(month_key);`
   );
 
   db.run(
-    `CREATE TABLE user_category(
+    sql`CREATE TABLE user_category(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         user INTEGER NOT NULL,
@@ -69,5 +72,7 @@ export function up(db: Database) {
         FOREIGN KEY(user) REFERENCES user(id)
       )`
   );
-  db.run("CREATE INDEX IF NOT EXISTS fk_category_user on user_category(user);");
+  db.run(
+    sql`CREATE INDEX IF NOT EXISTS fk_category_user on user_category(user);`
+  );
 }
