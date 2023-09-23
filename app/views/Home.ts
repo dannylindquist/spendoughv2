@@ -79,7 +79,7 @@ export const HomeView = ({
               x-transition:leave-start="opacity-100 scale-100"
               x-transition:leave-end="opacity-0 scale-90"
               @click.stop
-              class="absolute p-4 bg-white shadow-md left-1/2 transform -translate-x-1/2 rounded-md mt-4"
+              class="absolute p-4 bg-white shadow-md left-1/2 transform -translate-x-1/2 rounded-md mt-4 z-10"
             >
               <div class="flex gap-1 items-center">
                 <button

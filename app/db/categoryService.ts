@@ -65,6 +65,12 @@ export function updateCategory(
     .get(name, userId, categoryId);
 }
 
+export function deleteCategory(userId: number, categoryId: number) {
+  return db
+    .prepare("delete from user_category where user = ? and id = ? returning *")
+    .get(userId, categoryId);
+}
+
 export function getUserCategories(userId: number) {
   return db
     .prepare<DBCategory, number>("SELECT * from user_category where user = ?")

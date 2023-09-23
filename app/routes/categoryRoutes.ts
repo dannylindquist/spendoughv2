@@ -5,6 +5,7 @@ import {
   getUserCategories,
   getUserCategoryById,
   isCategoryNameUnique,
+  deleteCategory,
 } from "../db/categoryService.js";
 import { redirect } from "../utils/redirect.js";
 import { CategoryEditPage } from "../views/CategoryEditPage.js";
@@ -26,6 +27,17 @@ export function registerCategoryRoutes(router: RouterType) {
       getUserCategoryById(context.user.id, +request.params.categoryId) ??
       undefined;
     return html(CategoryEditPage({ currentUser: context.user, category }));
+  });
+
+  router.delete("/categories/:categoryId", async (request, context) => {
+    const categoryId = +request.params.categoryId;
+    const userId = context.user.id;
+    const removedCategory = deleteCategory(userId, categoryId);
+    console.log(removedCategory);
+    if (removedCategory) {
+      return json({ message: "success" });
+    }
+    return json({ message: "failure" }, { status: 404 });
   });
 
   router.post("/categories/:categoryId/edit", async (request, context) => {
